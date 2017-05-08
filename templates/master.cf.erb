@@ -25,6 +25,9 @@ submission inet n       -       n       -       -       smtpd
   -o smtpd_sasl_auth_enable=<%= @submission_smtpd_sasl_auth_enable %>
   -o smtpd_client_restrictions=<%= @submission_smtpd_client_restrictions %>
   -o milter_macro_daemon_name=ORIGINATING
+<% @submission_additional_options.each do |key,value| -%>
+  -o <%= key %>=<% if value.is_a?(Array) %><%= value.join(',') %><% else %><%= value %><% end %>
+<% end -%>
 <% end -%>
 <% if @smtps -%>
 smtps     inet  n       -       n       -       -       smtpd
@@ -34,6 +37,9 @@ smtps     inet  n       -       n       -       -       smtpd
   -o milter_macro_daemon_name=ORIGINATING
 <% @smtps_content_filter.each do |content_filter| -%>
   -o content_filter=<%= content_filter %>
+<% end -%>
+<% @smtps_additional_options.each do |key,value| -%>
+	-o <%= key %>=<% if value.is_a?(Array) %><%= value.join(',') %><% else %><%= value %><% end %>
 <% end -%>
 <% end -%>
 #628      inet  n       -       n       -       -       qmqpd
