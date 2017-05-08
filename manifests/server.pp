@@ -94,6 +94,7 @@ class postfix::server (
   # EL6
   $submission_smtpd_tls_security_level = 'encrypt',
   $submission_smtpd_sasl_auth_enable = 'yes',
+  $smtps = false,
   $smtps_smtpd_sasl_auth_enable = 'yes',
   # submission should only be used for authenticated delivery, so explicitly
   # reject everything else.
