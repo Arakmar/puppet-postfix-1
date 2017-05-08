@@ -103,6 +103,8 @@ class postfix::server (
   # example) so no explicit reject. smtps port 465 is non-standards compliant 
   # anyway so no one true answer. 
   $smtps_smtpd_client_restrictions = 'permit_sasl_authenticated',
+  $submission_additional_options = {},
+  $smtps_additional_options = {},
   $master_services = [],
   # Other files
   $header_checks = [],
