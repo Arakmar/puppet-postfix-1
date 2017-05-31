@@ -10,6 +10,9 @@ smtp      inet  n       -       n       -       -       smtpd
 <% @smtp_content_filter.each do |content_filter| -%>
   -o content_filter=<%= content_filter %>
 <% end -%>
+<% @smtp_additional_options.each do |key,value| -%>
+  -o <%= key %>=<% if value.is_a?(Array) %><%= value.join(',') %><% else %><%= value %><% end %>
+<% end -%>
 <% if @submission -%>
 submission inet n       -       n       -       -       smtpd
   -o smtpd_enforce_tls=<%= @submission_smtpd_enforce_tls %>
