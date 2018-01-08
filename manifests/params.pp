@@ -40,10 +40,16 @@ class postfix::params {
       $postmap = '/usr/sbin/postmap'
     }
     'Debian': {
+      # The daemon directory is different since Stretch
+      if (versioncmp($::operatingsystemmajrelease, '9') >= 0) {
+        $daemon_directory = '/usr/lib/postfix/sbin'
+      } else {
+        $daemon_directory = '/usr/lib/postfix'
+      }
+
       $postfix_version = undef
       $command_directory = '/usr/sbin'
       $config_directory = '/etc/postfix'
-      $daemon_directory = '/usr/lib/postfix'
       $shlib_directory = '/usr/lib64/postfix'
       $data_directory = '/var/lib/postfix'
       $manpage_directory = '/usr/share/man'
