@@ -124,6 +124,8 @@ class postfix::server (
   $postscreen_dnsbl_action     = 'enforce',
   # Spamassassin
   $spamassassin        = false,
+  $spamd_user          = 'spamd',
+  $spamd_home_dir      = '/var/lib/spamd',
   $sa_required_hits    = '5',
   $sa_report_safe      = '0',
   $sa_rewrite_header   = [],
@@ -131,10 +133,6 @@ class postfix::server (
   $sa_skip_rbl_checks  = '1',
   $sa_loadplugin       = [ 'Mail::SpamAssassin::Plugin::SPF' ],
   $sa_score            = [ 'FH_DATE_PAST_20XX 0' ],
-  $spampd_port         = '10026',
-  $spampd_relayport    = '10027',
-  $spampd_children     = '20',
-  $spampd_maxsize      = '512',
   # Other filters
   $postgrey                = false,
   # whether this class should manage installing and configuring postgrey
@@ -157,9 +155,8 @@ class postfix::server (
   $postgrey_package       = $::postfix::params::postgrey_package,
   $service_restart        = $::postfix::params::service_restart,
   $spamassassin_package   = $::postfix::params::spamassassin_package,
-  $spampd_package         = $::postfix::params::spampd_package,
-  $spampd_config          = $::postfix::params::spampd_config,
-  $spampd_template        = $::postfix::params::spampd_template,
+  $spamd_config          = $::postfix::params::spamd_config,
+  $spamd_template        = $::postfix::params::spamd_template,
   $root_group             = $::postfix::params::root_group,
   $mailq_path             = $::postfix::params::mailq_path,
   $newaliases_path        = $::postfix::params::newaliases_path,
@@ -207,27 +204,34 @@ class postfix::server (
     require => Package[$package_name],
   }
 
-  # Optional Spamassassin setup (using spampd)
+  # Optional Spamassassin setup
   if $spamassassin {
     # Main packages and service they provide
-    package { [ $spamassassin_package, $spampd_package ]: ensure => installed }
+    package { $spamassassin_package: ensure => installed }
+
+    user { $spamd_user:
+      system     => true,
+      home       => $spamd_home_dir,
+      managehome => true,
+    }
+
     # Note that we don't want the normal spamassassin (spamd) service
-    service { 'spampd':
-      require   => Package[$spampd_package],
+    service { 'spamassassin':
+      require   => [Package[$spamassassin_package], User['spamd']],
       enable    => true,
       ensure    => running,
       hasstatus => true,
     }
     # Override the options passed to spampd
-    file { $spampd_config:
-      content => template($spampd_template),
-      notify  => Service['spampd'],
+    file { $spamd_config:
+      content => template($spamd_template),
+      notify  => Service['spamassassin'],
     }
     # Change the spamassassin options
     file { '/etc/mail/spamassassin/local.cf':
       require => Package[$spamassassin_package],
       content => template('postfix/spamassassin-local.cf.erb'),
-      notify  => Service['spampd'],
+      notify  => Service['spamassassin'],
     }
   }
 
