@@ -1,0 +1,4 @@
+# Options to spamd
+SAHOME="<%= @spamd_home_dir %>"
+SUSER="<%= @spamd_user %>"
+SPAMDOPTIONS="-d -c -m5 -H --username ${SUSER} -H ${SAHOME} -s ${SAHOME}/spamfilter.log"
