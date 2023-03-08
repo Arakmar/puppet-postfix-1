@@ -96,6 +96,32 @@ class postfix::params {
       $sendmail_path = '/usr/local/sbin/sendmail'
       $postmap = '/usr/local/sbin/postmap'
     }
+    'Archlinux': {
+      $postfix_version = undef
+      $command_directory = '/usr/sbin'
+      $config_directory = '/etc/postfix'
+      $daemon_directory = '/usr/lib/postfix/bin'
+      $shlib_directory = '/usr/lib/postfix'
+      $data_directory = '/var/lib/postfix'
+      $manpage_directory = '/usr/share/man'
+      $readme_directory = '/usr/share/doc/postfix/README_FILES'
+      $sample_directory = '/usr/share/doc/postfix/samples'
+      $service_restart = '/sbin/service postfix reload'
+      $dovecot_directory = '/usr/lib/dovecot'
+      $postfix_package = 'postfix'
+      $postfix_mysql_package = 'postfix-mysql'
+      $postfix_package_ensure = installed
+      $postgrey_package = 'postgrey'
+      $spamassassin_package = 'spamassassin'
+      $spamd_config = '/etc/sysconfig/spamassassin'
+      $spamd_template = 'postfix/sysconfig-spamd.erb'
+      $root_group = 'root'
+      $setgid_group = 'postdrop'
+      $mailq_path = '/usr/bin/mailq'
+      $newaliases_path = '/usr/bin/newaliases'
+      $sendmail_path = '/usr/sbin/sendmail'
+      $postmap = '/usr/sbin/postmap'
+    }
     default: {
       fail("Unsupported OS family ${::osfamily}")
     }
