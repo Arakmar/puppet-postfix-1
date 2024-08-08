@@ -1,9 +1,9 @@
 # Class: postfix::params
 #
 class postfix::params {
-  case $::osfamily {
+  case $facts['os']['family'] {
     'RedHat': {
-      $postfix_version = $::operatingsystemmajrelease ? {
+      $postfix_version = $facts['os']['release']['major'] ? {
         '7'     => '2.6.6', # Not correct, but let's not change existing
         '6'     => '2.6.6',
         '5'     => '2.3.3',
@@ -40,7 +40,7 @@ class postfix::params {
     }
     'Debian': {
       # The daemon directory is different since Stretch
-      if (versioncmp($::operatingsystemmajrelease, '9') >= 0) {
+      if (versioncmp($facts['os']['release']['major'], '9') >= 0) {
         $daemon_directory = '/usr/lib/postfix/sbin'
       } else {
         $daemon_directory = '/usr/lib/postfix'
